@@ -1,14 +1,9 @@
 This plugin adds the Threat Patrols repository for OPNsense packages.
 
 Threat Patrols plugins include:-
-
-MultiCLOUDsense
-Enables running OPNsense on various cloud-compute providers with DevOps automation features.
-
-Configuration Sync
-Synchronize system configuration .xml files to various cloud-storage providers.
-
-AutoSSH
-Maintain persistent SSH forward/reverse tunnels from OPNsense to remote systems.
+ * MultiCLOUDsense
+ * Configuration Sync
+ * AutoSSH
+ * ... and others
 
 WWW: https://documentation.threatpatrols.com/opnsense-plugins/
