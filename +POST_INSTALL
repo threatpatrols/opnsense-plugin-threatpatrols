@@ -1,5 +1,8 @@
 #!/bin/sh
 
 pkg update --force
-
 configctl firmware resync
+
+if [ $(pkg info --annotations os-threatpatrols | grep -c repository) -eq 0 ]; then
+  nohup pkg install --force --yes os-threatpatrols 1> /dev/null 2> /dev/null &
+fi

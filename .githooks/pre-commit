@@ -8,7 +8,7 @@ if [ $(ls -1 | grep -c '^src$') -eq 1 ]; then
   if [ -f "Makefile" ]; then
 
     plugin_revision_main=$(cat Makefile | grep ^PLUGIN_VERSION= | cut -d'=' -f2 | tr -d ' ' | rev | cut -d'.' -f2- | rev)
-    plugin_revision_minor=$(($(cat Makefile | grep ^PLUGIN_VERSION= | cut -d'=' -f2 | tr -d ' ' | rev | cut -d'.' -f1)+1))
+    plugin_revision_minor=$(($(cat Makefile | grep ^PLUGIN_VERSION= | cut -d'=' -f2 | tr -d ' ' | rev | cut -d'.' -f1 | rev)+1))
     sed -i "s/^PLUGIN_VERSION=.*/PLUGIN_VERSION=     ${plugin_revision_main}.${plugin_revision_minor}/" "Makefile"
     git add Makefile
   fi
