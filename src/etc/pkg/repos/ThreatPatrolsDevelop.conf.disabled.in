@@ -1,0 +1,7 @@
+ThreatPatrolsDevelop: {
+  url: "https://repo.threatpatrols.com/opnsense/${ABI}/%%PLUGIN_ABI%%/develop",
+  signature_type: "fingerprints",
+  fingerprints: "/usr/local/etc/pkg/fingerprints/ThreatPatrols",
+  priority: 60
+  enabled: yes
+}

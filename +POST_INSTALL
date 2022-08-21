@@ -1,4 +1,5 @@
 #!/bin/sh
 
-pkg update -f
+pkg update --force
+
 configctl firmware resync
