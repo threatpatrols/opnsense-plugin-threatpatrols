@@ -2,7 +2,16 @@
 
 pkg update --force
 configctl firmware resync
+service configd restart
 
-if [ $(pkg info --annotations os-threatpatrols | grep -c repository) -eq 0 ]; then
-  nohup pkg install --force --yes os-threatpatrols 1> /dev/null 2> /dev/null &
+# Causes os-threatpatrols to reinstall >if< package was not installed from repository
+if [ ! -f /tmp/reinstall-os-threatpatrols ]; then
+  if [ $(pkg info --annotations os-threatpatrols | wc -l | tr -d "[:blank:]") -gt 0 ]; then
+    if [ $(pkg info --annotations os-threatpatrols | grep -c repository) -eq 0 ]; then
+      date > /tmp/reinstall-os-threatpatrols
+      nohup pkg install --force --yes os-threatpatrols 1> /dev/null 2> /dev/null &
+    fi
+  fi
+else
+  rm -f /tmp/reinstall-os-threatpatrols
 fi

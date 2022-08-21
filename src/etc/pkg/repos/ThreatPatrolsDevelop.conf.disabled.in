@@ -3,5 +3,5 @@ ThreatPatrolsDevelop: {
   signature_type: "fingerprints",
   fingerprints: "/usr/local/etc/pkg/fingerprints/ThreatPatrols",
   priority: 60
-  enabled: yes
+  enabled: no
 }
