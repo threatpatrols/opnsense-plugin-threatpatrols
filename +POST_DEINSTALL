@@ -1,3 +1,5 @@
 #!/bin/sh
 
 rm -f /usr/local/etc/pkg/repos/ThreatPatrol*
+
+configctl firmware resync
