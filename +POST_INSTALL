@@ -1,6 +1,7 @@
 #!/bin/sh
 
-pkg update --force
+/usr/local/opnsense/scripts/ThreatPatrols/Repo/repo_actions.sh update
+
 configctl firmware resync
 service configd restart
 

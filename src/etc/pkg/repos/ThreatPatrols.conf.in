@@ -1,7 +1,0 @@
-ThreatPatrols: {
-  url: "https://repo.threatpatrols.com/opnsense/${ABI}/%%PLUGIN_ABI%%/stable",
-  signature_type: "fingerprints",
-  fingerprints: "/usr/local/etc/pkg/fingerprints/ThreatPatrols",
-  priority: 50
-  enabled: yes
-}

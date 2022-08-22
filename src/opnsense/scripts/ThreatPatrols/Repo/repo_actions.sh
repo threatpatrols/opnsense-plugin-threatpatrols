@@ -3,49 +3,96 @@
 set -e
 repos_path="/usr/local/etc/pkg/repos"
 
-if [ -z "${1}" ]; then
-  echo "ERROR: repo action not provided"
-  exit 1
-fi
-
-enable_threatpatrols_repo()
+threatpatrols_repo_enable()
 {
-  repo_enable="${1}"
-  mv ${repos_path}/${repo_enable}.conf.disabled ${repos_path}/${repo_enable}.conf
-  sed -i "" "s/enabled:.*/enabled: yes/g" ${repos_path}/${repo_enable}.conf
-  pkg update --force
-}
-
-disable_threatpatrols_repos_all()
-{
-  for f in ${repos_path}/ThreatPatrol*.conf; do
-    mv -- "${f}" "${f%.conf}.conf.disabled"
-    sed -i "" "s/enabled:.*/enabled: no/g" "${f%.conf}.conf.disabled"
-  done
-}
-
-inuse_threatpatrols_repo() {
-  ls -1 ${repos_path}/ThreatPatrol* | grep '\.conf$' | rev | cut -d'/' -f1 | rev | cut -d'.' -f1
-}
-
-manage_threatpatrols_repo()
-{
-  repo_name="${1}"
-  if [ "$(inuse_threatpatrols_repo)" != "${repo_name}" ]; then
-    disable_threatpatrols_repos_all
-    enable_threatpatrols_repo "${repo_name}"
+  if [ -f ${repos_path}/ThreatPatrols.conf ]; then
+    sed -i "" "s/enabled:.*/enabled: yes/g" ${repos_path}/ThreatPatrols.conf
+    if [ $? ]; then
+      pkg update --force
+    fi
   fi
 }
 
-if [ "${1}" = "inuse" ]; then
-  inuse_threatpatrols_repo
-elif [ "${1}" = "stable" ]; then
-  manage_threatpatrols_repo "ThreatPatrols"
-elif [ "${1}" = "testing" ]; then
-  manage_threatpatrols_repo "ThreatPatrolsTesting"
-elif [ "${1}" = "develop" ]; then
-  manage_threatpatrols_repo "ThreatPatrolsDevelop"
-else
-  echo "ERROR: unknown repo action requested"
-  exit 1
-fi
+threatpatrols_repo_disable()
+{
+  if [ -f ${repos_path}/ThreatPatrols.conf ]; then
+    sed -i "" "s/enabled:.*/enabled: no/g" ${repos_path}/ThreatPatrols.conf
+    if [ $? ]; then
+      pkg update --force
+    fi
+  fi
+}
+
+threatpatrols_repo_in_use() {
+  if [ -f ${repos_path}/ThreatPatrols.conf ]; then
+    grep ': {' ${repos_path}/ThreatPatrols.conf | cut -d':' -f1
+  fi
+}
+
+threatpatrols_repo_update_template()
+{
+  __RepoName__="${1}"
+  __RepoPluginAbi__="$(/usr/local/sbin/opnsense-version -a)"
+
+  if [ "${__RepoName__}" = "ThreatPatrolsDevelop" ]; then
+    __RepoStreamPath__="develop"
+    __RepoPriority__=60
+  elif [ "${__RepoName__}" = "ThreatPatrolsTesting" ]; then
+    __RepoStreamPath__="testing"
+    __RepoPriority__=55
+  else
+    __RepoName__="ThreatPatrols"
+    __RepoStreamPath__="stable"
+    __RepoPriority__=50
+  fi
+
+  cp "${repos_path}/ThreatPatrols.conf.template" "/tmp/ThreatPatrols.conf"
+  sed -i "" "s|__RepoName__|${__RepoName__}|g" "/tmp/ThreatPatrols.conf"
+  sed -i "" "s|__RepoPluginAbi__|${__RepoPluginAbi__}|g" "/tmp/ThreatPatrols.conf"
+  sed -i "" "s|__RepoStreamPath__|${__RepoStreamPath__}|g" "/tmp/ThreatPatrols.conf"
+  sed -i "" "s|__RepoPriority__|${__RepoPriority__}|g" "/tmp/ThreatPatrols.conf"
+
+  if [ ! -f ${repos_path}/ThreatPatrols.conf ]; then
+    mv /tmp/ThreatPatrols.conf ${repos_path}/ThreatPatrols.conf
+    return 0
+  elif [ $(diff /tmp/ThreatPatrols.conf ${repos_path}/ThreatPatrols.conf | wc -l | tr -d '[:blank:]') -gt 0 ]; then
+    mv /tmp/ThreatPatrols.conf ${repos_path}/ThreatPatrols.conf
+    return 0
+  fi
+  rm -f /tmp/ThreatPatrols.conf
+  return 1
+}
+
+threatpatrols_repo_update() {
+  if threatpatrols_repo_update_template "${1}"; then
+    pkg update --force
+  fi
+}
+
+case ${1} in
+  enable)
+    threatpatrols_repo_enable
+    ;;
+  disable)
+    threatpatrols_repo_disable
+    ;;
+  in_use)
+    threatpatrols_repo_in_use
+    ;;
+  update)
+    threatpatrols_repo_update "$(threatpatrols_repo_in_use)"
+    ;;
+  use_stable)
+    threatpatrols_repo_update "ThreatPatrols"
+    ;;
+  use_testing)
+    threatpatrols_repo_update "ThreatPatrolsTesting"
+    ;;
+  use_develop)
+    threatpatrols_repo_update "ThreatPatrolsDevelop"
+    ;;
+  *)
+    echo "usage: repo_actions.sh [ enable | disable | in_use | update | use_stable | use_testing | use_develop ]"
+    exit 1
+
+esac

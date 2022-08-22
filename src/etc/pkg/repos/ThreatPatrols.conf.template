@@ -1,0 +1,7 @@
+__RepoName__: {
+  url: "https://repo.threatpatrols.com/opnsense/${ABI}/__RepoPluginAbi__/__RepoStreamPath__",
+  signature_type: "fingerprints",
+  fingerprints: "/usr/local/etc/pkg/fingerprints/ThreatPatrols",
+  priority: __RepoPriority__
+  enabled: yes
+}
