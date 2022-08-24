@@ -1,6 +1,6 @@
 This plugin adds the Threat Patrols repository for OPNsense packages.
 
-Threat Patrols plugins include:-
+Threat Patrols produces OPNsense plugins including:-
  * MultiCLOUDsense
  * Autossh
  * Configuration Sync

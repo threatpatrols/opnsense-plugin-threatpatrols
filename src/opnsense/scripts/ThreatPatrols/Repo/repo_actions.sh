@@ -29,6 +29,16 @@ threatpatrols_repo_in_use() {
   fi
 }
 
+threatpatrols_repo_info() {
+  if [ -f ${repos_path}/ThreatPatrols.conf ]; then
+    echo '{'
+    echo '  "name": "'$(threatpatrols_repo_in_use)'",'
+    echo '  "url": "'$(cat /usr/local/etc/pkg/repos/ThreatPatrols.conf | grep 'url:' | cut -d '"' -f2)'",'
+    echo '  "system_abi": "'$(uname -s):$(uname -r | cut -d'.' -f1):$(uname -p)'"'
+    echo '}'
+  fi
+}
+
 threatpatrols_repo_update_template()
 {
   __RepoName__="${1}"
@@ -67,6 +77,7 @@ threatpatrols_repo_update() {
   if threatpatrols_repo_update_template "${1}"; then
     pkg update --force
   fi
+  configctl firmware resync
 }
 
 case ${1} in
@@ -78,6 +89,9 @@ case ${1} in
     ;;
   in_use)
     threatpatrols_repo_in_use
+    ;;
+  info)
+    threatpatrols_repo_info
     ;;
   update)
     threatpatrols_repo_update "$(threatpatrols_repo_in_use)"
@@ -92,7 +106,7 @@ case ${1} in
     threatpatrols_repo_update "ThreatPatrolsDevelop"
     ;;
   *)
-    echo "usage: repo_actions.sh [ enable | disable | in_use | update | use_stable | use_testing | use_develop ]"
+    echo "usage: repo_actions.sh [ enable | disable | in_use | info | update | use_stable | use_testing | use_develop ]"
     exit 1
 
 esac

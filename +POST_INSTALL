@@ -1,8 +1,12 @@
 #!/bin/sh
 
+# update the ThreatPatrols repo config file from .template
 /usr/local/opnsense/scripts/ThreatPatrols/Repo/repo_actions.sh update
 
-configctl firmware resync
+# Rebuild system-menus and plugin-templates
+/usr/local/etc/rc.configure_plugins
+
+# Restart configd with latest templates
 service configd restart
 
 # Causes os-threatpatrols to reinstall >if< package was not installed from repository
