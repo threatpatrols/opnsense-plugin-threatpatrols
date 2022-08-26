@@ -56,7 +56,7 @@ foreach(explode("\n", configd_run("threatpatrols packages installed")) as $tp_in
         </tr>
         <?php foreach($tp_repo_data as $name => $value): ?>
         <tr>
-            <td style="width: 20%;"><?php echo html_safe($name); ?></td>
+            <td style="width: 30%;"><?php echo html_safe($name); ?></td>
             <td colspan="2"><?php echo html_safe($value); ?></td>
         </tr>
         <?php endforeach; ?>
@@ -68,7 +68,7 @@ foreach(explode("\n", configd_run("threatpatrols packages installed")) as $tp_in
         </tr>
         <?php foreach($tp_installed_list as $tp_installed_item): ?>
         <tr>
-            <td style="width: 20%;"><?php echo html_safe($tp_installed_item["name"]); ?></td>
+            <td style="width: 30%;"><?php echo html_safe($tp_installed_item["name"]); ?></td>
             <td><?php echo html_safe($tp_installed_item["version"]); ?></td>
             <td style="width: 30%;"><?php echo html_safe($tp_installed_item["annotations"]["repository"]); ?></td>
         </tr>
