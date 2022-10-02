@@ -3,6 +3,8 @@
 # update the ThreatPatrols repo config file from .template
 /usr/local/opnsense/scripts/ThreatPatrols/Repo/repo_actions.sh update
 
+/usr/local/opnsense/scripts/ThreatPatrols/Repo/widget_actions.sh insert || (echo "ERROR: failed to insert dashboard widget")
+
 # Rebuild system-menus and plugin-templates
 /usr/local/etc/rc.configure_plugins
 
