@@ -25,7 +25,7 @@ __replace_sequence_tag() {
     echo "ERROR: unexpected number of sequence tags, exiting."
     exit 1
   fi
-  _temp_config="/tmp/config_temp_$(head /dev/urandom | sha256sum | head -c8).xml"
+  _temp_config="/tmp/config_temp_$(head /dev/urandom | sha256 | head -c8).xml"
   awk '{sub("<sequence>.*</sequence>", "<sequence>'"${_sequence_content}"'</sequence>"); print}' "${config_file}" > "${_temp_config}"
   xmlwf "${_temp_config}" || (echo "ERROR: new XML config file does not pass xml well-formed test, exiting.")
   mv "${_temp_config}" "${config_file}"
@@ -42,7 +42,7 @@ __current_widget_sequence_wo_threatpatrols() {
 }
 
 __test_required_files() {
-  _binaries="tr awk cut head grep xmlwf sha256sum"
+  _binaries="tr awk cut head grep xmlwf sha256"
   for _binary in ${_binaries}; do
     which "${_binary}" > /dev/null || (echo "ERROR: unable to locate required binary \"${_binary}\", exiting."; exit 1)
   done
