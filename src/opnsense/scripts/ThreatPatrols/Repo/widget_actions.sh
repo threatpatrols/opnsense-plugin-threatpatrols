@@ -32,7 +32,7 @@ __replace_sequence_tag() {
 }
 
 __current_widget_sequence() {
-  _sequence="$(cat ${config_file} | grep '<widgets>' -A10 | grep '<sequence>' | head -n1 | cut -d'>' -f2 | cut -d'<' -f1)"
+  _sequence="$(grep '<sequence>' ${config_file} | head -n1 | cut -d'>' -f2 | cut -d'<' -f1)"
   echo "${_sequence}"
 }
 
